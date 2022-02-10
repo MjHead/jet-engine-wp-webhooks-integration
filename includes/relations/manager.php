@@ -15,10 +15,14 @@ class Manager {
 	public function maybe_add_relations_data( $data, $response, $webhook, $args, $authentication_data ) {
 
 		if ( ! empty( $webhook['webhook_name'] ) ) {
+
 			$name = str_replace( ' ' , '_', ucwords( str_replace( '_', ' ', $webhook['webhook_name'] ) ) );
 			$class_name = __NAMESPACE__ . '\\Hooks\\' . $name;
-			$instance = new $class_name( $data );
-			$data = $instance->get_prepared_data();
+
+			if ( class_exists( $class_name ) ) {
+				$instance = new $class_name( $data );
+				$data = $instance->get_prepared_data();
+			}
 		}
 
 		return $data;
