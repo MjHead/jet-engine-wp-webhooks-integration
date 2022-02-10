@@ -10,7 +10,13 @@ class Post_Update extends Base {
 
 	public function get_type_from_data() {
 
-		$post_type = ! empty( $this->input_data['post']['post_type'] ) ? $this->input_data['post']['post_type'] : false;
+		$post = $this->input_data['post'];
+
+		if ( is_object( $post ) ) {
+			$post = get_object_vars( $post );
+		}
+
+		$post_type = ! empty( $post['post_type'] ) ? $post['post_type'] : false;
 
 		if ( ! $post_type || ! isset( jet_engine()->relations->types_helper ) ) {
 			return false;
@@ -20,10 +26,17 @@ class Post_Update extends Base {
 	}
 
 	public function get_item_id() {
+
+		$post = $this->input_data['post'];
+
+		if ( is_object( $post ) ) {
+			$post = get_object_vars( $post );
+		}
+
 		if ( isset( $this->input_data['post_id'] ) ) {
 			return $this->input_data['post_id'];
-		} elseif ( isset( $this->input_data['post']['ID'] ) ) {
-			return $this->input_data['post']['ID'];
+		} elseif ( isset( $post['ID'] ) ) {
+			return $post['ID'];
 		} else {
 			return false;
 		}
